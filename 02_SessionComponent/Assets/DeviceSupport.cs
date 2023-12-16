@@ -7,15 +7,15 @@ namespace Taikonauten.Unity.ArticleSeries
 {
     public class DeviceSupport : MonoBehaviour
     {
-        [SerializeField] ARSession m_Session;
+        [SerializeField] ARSession session;
 
         IEnumerator Start()
         {
-            m_Session.attemptUpdate = true;
+            session.attemptUpdate = true;
 
-            if (m_Session == null)
+            if (session == null)
             {
-                Debug.LogError("MRCourse -> DeviceSupport (Start): session is null");
+                Debug.LogError("DeviceSupport -> Start(): session is null");
 
                 yield break;
             }
@@ -23,7 +23,7 @@ namespace Taikonauten.Unity.ArticleSeries
             if ((ARSession.state == ARSessionState.None) ||
                 (ARSession.state == ARSessionState.CheckingAvailability))
             {
-                Debug.Log("MRCourse -> DeviceSupport (Start): check availability");
+                Debug.Log("DeviceSupport -> Start(): check availability");
 
                 yield return ARSession.CheckAvailability();
             }
@@ -31,14 +31,14 @@ namespace Taikonauten.Unity.ArticleSeries
             if (ARSession.state == ARSessionState.Unsupported)
             {
                 // Start some fallback experience for unsupported devices
-                Debug.Log("MRCourse -> DeviceSupport (Start): unsupported device");
+                Debug.Log("DeviceSupport -> Start(): unsupported device");
             }
             else
             {
                 // Start the AR session
-                Debug.Log("MRCourse -> DeviceSupport (Start): start AR session");
+                Debug.Log("DeviceSupport -> Start(): start AR session");
 
-                m_Session.enabled = true;
+                session.enabled = true;
             }
         }
     }
