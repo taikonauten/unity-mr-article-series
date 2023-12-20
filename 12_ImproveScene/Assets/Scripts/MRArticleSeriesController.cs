@@ -83,42 +83,28 @@ namespace Taikonauten.Unity.ArticleSeries
 
             if (rayInteractor.TryGetCurrent3DRaycastHit(out RaycastHit hit))
             {
-                // Instantiate the door Prefab
-                doorInstance = Instantiate(door, hit.point, Quaternion.identity);
+                Pose pose = new(hit.point, Quaternion.identity);
+                Result<ARAnchor> result = await anchorManager.TryAddAnchorAsync(pose);
 
-                // Unity recommends parenting your content to the anchor.
-                // doorInstance.transform.parent = anchor.transform;
+                result.TryGetResult(out ARAnchor anchor);
 
-                // Make the door face the user after instantiating
-                doorInstance.transform.LookAt(new Vector3(
-                    Camera.main.transform.position.x,
-                    doorInstance.transform.position.y,
-                    Camera.main.transform.position.z
-                ));
+                if (anchor != null)
+                {
+                    // Instantiate the door Prefab
+                    doorInstance = Instantiate(door, hit.point, Quaternion.identity);
 
-                doorInstance.GetComponentInChildren<MimicCamera>().DoorTransform = doorInstance.transform;
-                // Pose pose = new(hit.point, Quaternion.identity);
-                // Result<ARAnchor> result = await anchorManager.TryAddAnchorAsync(pose);
+                    // Unity recommends parenting your content to the anchor.
+                    doorInstance.transform.parent = anchor.transform;
 
-                // result.TryGetResult(out ARAnchor anchor);
+                    // Make the door face the user after instantiating
+                    doorInstance.transform.LookAt(new Vector3(
+                        Camera.main.transform.position.x,
+                        doorInstance.transform.position.y,
+                        Camera.main.transform.position.z
+                    ));
 
-                // if (anchor != null)
-                // {
-                //     // Instantiate the door Prefab
-                //     doorInstance = Instantiate(door, hit.point, Quaternion.identity);
-
-                //     // Unity recommends parenting your content to the anchor.
-                //     doorInstance.transform.parent = anchor.transform;
-
-                //     // Make the door face the user after instantiating
-                //     doorInstance.transform.LookAt(new Vector3(
-                //         Camera.main.transform.position.x,
-                //         doorInstance.transform.position.y,
-                //         Camera.main.transform.position.z
-                //     ));
-
-                //     doorInstance.GetComponentInChildren<MimicCamera>().DoorTransform = doorInstance.transform;
-                // }
+                    doorInstance.GetComponentInChildren<MimicCamera>().DoorTransform = doorInstance.transform;
+                }
             }
         }
 
